@@ -1,65 +1,55 @@
-# AI-Driven Resume Lie Detector
+# AI-Driven Resume Lie Detector (Frontend Only)
 
-A production-ready full-stack web application that analyzes PDF resumes, verifies claims using AI, and generates a "Truth Score" to detect inconsistencies.
+A production-ready web application that analyzes PDF resumes, verifies claims using AI, and generates a "Truth Score" to detect inconsistencies. **Now running entirely in the browser!**
 
 ## 🚀 Features
 
-- **PDF Parsing**: Extracts text and entities from uploaded resumes.
-- **AI Verification**: Uses LLMs to cross-reference skills, projects, and timelines.
+- **Client-Side PDF Parsing**: Extracts text from uploaded resumes directly in your browser.
+- **AI Verification**: Uses Google Gemini API to cross-reference skills, projects, and timelines.
 - **Truth Score**: Calculates a weighted credibility score based on multiple factors.
 - **Detailed Report**: Visualizes suspicious points and generates technical follow-up questions.
-- **Full-Stack Architecture**: Spring Boot (Backend), FastAPI (AI Service), React (Frontend), PostgreSQL (DB).
+- **Secure**: Your resume data stays local and is sent directly to the AI API, not stored on any intermediate server.
 
 ## 🛠️ Tech Stack
 
-- **Backend**: Java 17, Spring Boot 3, PostgreSQL, Apache PDFBox
-- **AI Microservice**: Python 3.11, FastAPI, OpenAI/Gemini Integration
-- **Frontend**: React, Vite, Tailwind CSS, Recharts
-- **Infrastructure**: Docker, Docker Compose
+- **Frontend**: React, Vite, Tailwind CSS, Framer Motion
+- **AI**: Google Gemini API (`@google/generative-ai`)
+- **PDF Processing**: `pdfjs-dist`
 
 ## 🏁 Getting Started
 
 ### Prerequisites
 
-- Docker & Docker Compose installed
-- (Optional) OpenAI or Gemini API Key for real AI analysis
+- Node.js installed
+- A Google Gemini API Key (Get one [here](https://aistudio.google.com/app/apikey))
 
 ### Running the Application
 
-1.  **Clone the repository** (if applicable)
-2.  **Set API Keys (Optional)**:
-    Create a `.env` file in the root directory or export variables:
+1.  **Clone the repository**
+2.  **Install Dependencies**:
     ```bash
-    export OPENAI_API_KEY=your_key_here
-    # OR
-    export GEMINI_API_KEY=your_key_here
+    cd frontend
+    npm install
     ```
-    *Note: If no keys are provided, the system runs in simulation mode with mock data.*
-
-3.  **Build and Run**:
+3.  **Run Locally**:
     ```bash
-    docker compose up --build
+    npm run dev
     ```
-
 4.  **Access the App**:
-    - **Frontend**: [http://localhost:3000](http://localhost:3000)
-    - **Backend API**: [http://localhost:8080](http://localhost:8080)
-    - **AI Service**: [http://localhost:8000/docs](http://localhost:8000/docs)
+    - Open [http://localhost:5173](http://localhost:5173) (or the port shown in your terminal)
 
 ## 📸 Usage
 
-1.  Go to `http://localhost:3000`.
-2.  Upload a PDF resume.
-3.  Wait for the analysis to complete.
-4.  View the Truth Score, suspicious points, and suggested interview questions.
+1.  Open the application in your browser.
+2.  Enter your **Gemini API Key** (it's saved locally for convenience).
+3.  Upload a PDF resume.
+4.  Wait for the analysis to complete.
+5.  View the Truth Score, suspicious points, and suggested interview questions.
 
 ## 📂 Project Structure
 
 ```
 root/
- ├── backend/       # Spring Boot Application
- ├── ai-service/    # Python FastAPI Microservice
- ├── frontend/      # React Frontend
- ├── docker-compose.yml
+ ├── frontend/      # React Frontend (Main Application)
  └── README.md
 ```

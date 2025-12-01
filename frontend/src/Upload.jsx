@@ -1,8 +1,9 @@
 import React, { useState, useCallback } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Cloud, Loader2, FileText, Shield, Zap, CheckCircle, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { extractTextFromPdf } from './utils/pdf';
+import { analyzeResume } from './utils/gemini';
 
 const Upload = () => {
     const [file, setFile] = useState(null);
@@ -37,27 +38,40 @@ const Upload = () => {
     const handleUpload = async () => {
         if (!file) return;
 
+        const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+
+        if (!apiKey) {
+            alert("API Key not configured. Please check .env file.");
+            return;
+        }
+
         setLoading(true);
-        const formData = new FormData();
-        formData.append('file', file);
 
         try {
-            const uploadRes = await axios.post('/api/resumes/upload', formData, {
-                headers: { 'Content-Type': 'multipart/form-data' }
-            });
-            const resumeId = uploadRes.data.id;
-            await axios.post(`/api/resumes/${resumeId}/verify`);
+            // 1. Extract text from PDF
+            const text = await extractTextFromPdf(file);
+            console.log("Extracted text length:", text.length);
+
+            // 2. Analyze with Gemini
+            const analysisResult = await analyzeResume(text, apiKey);
+
+            // 3. Save to localStorage
+            const resumeId = Date.now().toString();
+            localStorage.setItem(`resume_report_${resumeId}`, JSON.stringify(analysisResult));
+
+            // 4. Navigate to report
             navigate(`/report/${resumeId}`);
+
         } catch (error) {
-            console.error("Error uploading resume:", error);
-            alert("Failed to process resume. Please try again.");
+            console.error("Error processing resume:", error);
+            alert(`Failed to process resume: ${error.message}`);
         } finally {
             setLoading(false);
         }
     };
 
     const features = [
-        { icon: Shield, label: 'Secure Upload', gradient: 'from-primary to-accent' },
+        { icon: Shield, label: 'Secure Processing', gradient: 'from-primary to-accent' },
         { icon: Zap, label: 'AI-Powered', gradient: 'from-accent to-primary' },
         { icon: CheckCircle, label: 'Instant Results', gradient: 'from-primary to-secondary' },
     ];

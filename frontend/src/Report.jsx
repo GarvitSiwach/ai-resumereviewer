@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { ArrowLeft, AlertCircle, CheckCircle, HelpCircle, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -13,8 +12,13 @@ const Report = () => {
     useEffect(() => {
         const fetchReport = async () => {
             try {
-                const res = await axios.get(`/api/resumes/${id}/report`);
-                setReport(res.data);
+                // Read from localStorage
+                const storedReport = localStorage.getItem(`resume_report_${id}`);
+                if (storedReport) {
+                    setReport(JSON.parse(storedReport));
+                } else {
+                    console.error("Report not found in localStorage");
+                }
             } catch (error) {
                 console.error("Error fetching report:", error);
                 alert("Failed to load report");
@@ -42,6 +46,12 @@ const Report = () => {
                 <div className="text-center">
                     <AlertCircle size={64} className="text-danger mx-auto mb-4" />
                     <p className="text-text-muted">Report not found</p>
+                    <button
+                        onClick={() => navigate('/')}
+                        className="mt-4 px-6 py-2 bg-primary rounded-lg text-white hover:bg-primary/80 transition-colors"
+                    >
+                        Back to Upload
+                    </button>
                 </div>
             </div>
         );
@@ -142,7 +152,7 @@ const Report = () => {
                                 </div>
                                 <div className="bg-surface/50 rounded-xl p-4 border border-primary/10">
                                     <p className="text-text-dim text-sm mb-1">Follow-up Questions</p>
-                                    <p className="text-2xl font-bold text-white">{report.followUpQuestions?.length || 0}</p>
+                                    <p className="text-2xl font-bold text-white">{report.followupQuestions?.length || 0}</p>
                                 </div>
                             </div>
                         </div>
@@ -177,7 +187,7 @@ const Report = () => {
                 )}
 
                 {/* Follow-up Questions */}
-                {report.followUpQuestions && report.followUpQuestions.length > 0 && (
+                {report.followupQuestions && report.followupQuestions.length > 0 && (
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -189,7 +199,7 @@ const Report = () => {
                             <h2 className="text-2xl font-bold text-white">Follow-up Questions</h2>
                         </div>
                         <div className="space-y-4">
-                            {report.followUpQuestions.map((question, idx) => (
+                            {report.followupQuestions.map((question, idx) => (
                                 <div key={idx} className="bg-surface/50 rounded-xl p-6 border border-primary/20 hover:border-primary/40 transition-colors">
                                     <div className="flex gap-4">
                                         <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-primary/30 to-primary/10 flex items-center justify-center text-primary font-bold">
