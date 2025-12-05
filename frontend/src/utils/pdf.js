@@ -1,10 +1,8 @@
 import * as pdfjsLib from 'pdfjs-dist';
+import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 
-// Set worker source to the same version as the library
-pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-    'pdfjs-dist/build/pdf.worker.min.mjs',
-    import.meta.url,
-).toString();
+// Set worker source for Vite
+pdfjsLib.GlobalWorkerOptions.workerSrc = workerUrl;
 
 export const extractTextFromPdf = async (file) => {
     try {
